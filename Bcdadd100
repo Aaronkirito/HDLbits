@@ -1,0 +1,27 @@
+/*这道题目是100个BCD加法器串联，用generate方法来进行设计。题目提供了BCD加法器的模板，所以我们就可以直接使用bcd_fadd。
+在设计加法器的过程中，第一个加法器是要单独拿出来设计的，因为进位输入是不知道的（bcd加法器的特性）。所以要单独拿出来设计，
+然后剩下的99个加法器就可以用generate来重复生成。因为每个加法器都有四位输入输出，但是进位输入输出只有一位，所以要根据4位输入
+来设置循环计数器。*/
+module top_module( 
+    input [399:0] a, b,
+    input cin,
+    output cout,
+    output [399:0] sum );
+    
+    wire[99:0] carry_out;
+    genvar i;
+    bcd_fadd bcd_fadd_100(.a(a[3:0]), .b(b[3:0]), .cin(cin), .cout(carry_out[0]), .sum(sum[3:0])); //first adder
+    generate
+        for(i = 4; i <= 399; i = i+4 )
+            begin: bcd100
+                bcd_fadd bcd_fadd_100(.a(a[i+3:i]),
+                                      .b(b[i+3:i]),
+                                      .cin(carry_out[i/4 - 1]),
+                                      .cout(carry_out[i/4]),
+                                      .sum(sum[i+3:i]));
+            end
+    endgenerate
+    assign cout = carry_out[99];
+                
+
+endmodule
