@@ -1,0 +1,12 @@
+//verilog可以自动生成行波进位加法器
+//{cout, sum} = a + b + cin;
+//一定要记住cout要在sum之前！
+
+module top_module( 
+    input [99:0] a, b,
+    input cin,
+    output cout,
+    output [99:0] sum );
+
+    assign {cout, sum} = a + b + cin;
+endmodule
